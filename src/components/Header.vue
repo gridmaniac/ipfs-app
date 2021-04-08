@@ -7,7 +7,7 @@
       elevation="0"
       style="position: absolute"
     >
-      <div class="temporary-logo"></div>
+      <div @click="goHome()" class="temporary-logo"></div>
 
       <v-spacer></v-spacer>
       <v-btn
@@ -37,14 +37,19 @@
         elevation="0"
         >Link 3</v-btn
       >
+      <v-btn
+        color="primary"
+        class="ml-5 hidden-sm-and-down"
+        tile
+        elevation="0"
+        to="inventors"
+        >Sign up</v-btn
+      >
+
       <v-app-bar-nav-icon
         @click.stop="isDrawerActive = !isDrawerActive"
         class="hidden-md-and-up"
       ></v-app-bar-nav-icon>
-
-      <v-btn color="primary" class="ml-5 hidden-sm-and-down" tile elevation="0"
-        >Sign up</v-btn
-      >
     </v-app-bar>
     <Drawer :active="isDrawerActive" />
   </div>
@@ -62,6 +67,12 @@ export default {
     return {
       isDrawerActive: false,
     };
+  },
+
+  methods: {
+    goHome() {
+      this.$router.push({ path: "/" });
+    },
   },
 };
 </script>

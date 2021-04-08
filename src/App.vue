@@ -27,6 +27,7 @@ export default {
   background: #989898;
   width: 150px;
   height: 30px;
+  cursor: pointer;
 }
 
 .lean {
