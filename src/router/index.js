@@ -12,16 +12,25 @@ const routes = [
     path: "/",
     name: "Home",
     component: HomePage,
+    meta: {
+      title: "IPFS App",
+    },
   },
   {
     path: "/inventors",
     name: "Inventors",
     component: Inventors,
+    meta: {
+      title: "IPFS App - Inventors",
+    },
   },
   {
     path: "/investors",
     name: "Investors",
     component: Investors,
+    meta: {
+      title: "IPFS App - Investors",
+    },
   },
 ];
 

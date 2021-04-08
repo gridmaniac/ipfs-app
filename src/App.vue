@@ -19,6 +19,12 @@ export default {
     Header,
     Footer,
   },
+
+  watch: {
+    $route(to) {
+      document.title = to.meta.title || "IPFS App";
+    },
+  },
 };
 </script>
 
