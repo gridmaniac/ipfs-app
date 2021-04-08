@@ -20,7 +20,7 @@
             </v-card-text>
 
             <v-card-actions>
-              <v-btn color="primary" to="inventors">Learn more </v-btn>
+              <v-btn color="primary" to="investors">Learn more</v-btn>
             </v-card-actions>
           </v-img>
         </v-card>
@@ -44,7 +44,7 @@
             </v-card-text>
 
             <v-card-actions>
-              <v-btn color="primary" to="investors">Learn more </v-btn>
+              <v-btn color="primary" to="inventors">Learn more</v-btn>
             </v-card-actions>
           </v-img>
         </v-card>
