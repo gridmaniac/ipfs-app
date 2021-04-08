@@ -1,13 +1,7 @@
 <template>
   <v-carousel vertical vertical-delimiters cycle>
-    <v-carousel-item
-      v-for="(item, i) in items"
-      :key="i"
-      :src="item.src"
-      reverse-transition="fade-transition"
-      transition="fade-transition"
-    >
-      <v-row class="fill-height py-15 px-5 lean" align="end" justify="start">
+    <v-carousel-item v-for="(item, i) in items" :key="i" :src="item.src">
+      <v-row class="fill-height py-10 px-5 lean" align="end" justify="start">
         <v-col md="6" xs="12">
           <div class="text-h2 font-weight-medium">Lorem Ipsum</div>
           <div class="text-body1 mt-5">
