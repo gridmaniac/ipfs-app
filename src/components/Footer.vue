@@ -1,5 +1,5 @@
 <template>
-  <v-footer color="grey lighten-4 align-start pt-7" style="min-height: 250px">
+  <v-footer color="grey lighten-2 align-start pt-7" style="min-height: 250px">
     <v-row class="lean">
       <v-col md="2" cols="12"
         ><v-avatar color="grey darken-1" size="32"></v-avatar

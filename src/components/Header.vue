@@ -14,7 +14,7 @@
         color="secondary"
         class="mr-5 hidden-sm-and-down"
         small
-        outlined
+        text
         tile
         elevation="0"
         >Link 1</v-btn
@@ -23,7 +23,7 @@
         color="secondary"
         class="mr-5 hidden-sm-and-down"
         small
-        outlined
+        text
         tile
         elevation="0"
         >Link 2</v-btn
@@ -32,7 +32,7 @@
         color="secondary"
         class="mr-5 hidden-sm-and-down"
         small
-        outlined
+        text
         tile
         elevation="0"
         >Link 3</v-btn
@@ -42,8 +42,8 @@
         class="ml-5 hidden-sm-and-down"
         tile
         elevation="0"
-        to="inventors"
-        >Sign up</v-btn
+        to="signin"
+        >Sign in</v-btn
       >
 
       <v-app-bar-nav-icon

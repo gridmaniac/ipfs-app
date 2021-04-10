@@ -3,6 +3,8 @@ import VueRouter from "vue-router";
 import HomePage from "../views/HomePage.vue";
 import Inventors from "../views/Inventors.vue";
 import Investors from "../views/Investors.vue";
+import SignUp from "../views/SignUp.vue";
+import SignIn from "../views/SignIn.vue";
 import goTo from "vuetify/es5/services/goto";
 
 Vue.use(VueRouter);
@@ -21,7 +23,7 @@ const routes = [
     name: "Inventors",
     component: Inventors,
     meta: {
-      title: "IPFS App - Inventors",
+      title: "Inventors - IPFS App",
     },
   },
   {
@@ -29,7 +31,23 @@ const routes = [
     name: "Investors",
     component: Investors,
     meta: {
-      title: "IPFS App - Investors",
+      title: "Investors - IPFS App",
+    },
+  },
+  {
+    path: "/signup",
+    name: "Sign up",
+    component: SignUp,
+    meta: {
+      title: "Sign up - IPFS App",
+    },
+  },
+  {
+    path: "/signin",
+    name: "Sign in",
+    component: SignIn,
+    meta: {
+      title: "Sign in - IPFS App",
     },
   },
 ];
