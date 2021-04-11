@@ -104,20 +104,8 @@ export default {
 
   methods: {
     validate() {
-      this.$refs.form.validate();
+      if (this.$refs.form.validate()) this.$router.push("create");
     },
   },
 };
 </script>
-
-<style>
-.stripes {
-  background-image: repeating-linear-gradient(
-    180deg,
-    #989898,
-    #989898 50%,
-    #f3f3f3 50%,
-    #f3f3f3 100%
-  );
-}
-</style>

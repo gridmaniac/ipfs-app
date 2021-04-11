@@ -4,8 +4,10 @@ import "./registerServiceWorker";
 import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
+import VueUploadComponent from "vue-upload-component";
 
 Vue.config.productionTip = false;
+Vue.component("file-upload", VueUploadComponent);
 
 new Vue({
   router,

@@ -53,4 +53,10 @@ export default {
   box-shadow: none !important;
   background: #f3f3f3 !important;
 }
+
+.v-stepper__step__step {
+  width: 40px !important;
+  height: 40px !important;
+  font-size: 18px !important;
+}
 </style>

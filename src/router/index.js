@@ -5,6 +5,7 @@ import Inventors from "../views/Inventors.vue";
 import Investors from "../views/Investors.vue";
 import SignUp from "../views/SignUp.vue";
 import SignIn from "../views/SignIn.vue";
+import CreateIdea from "../views/CreateIdea.vue";
 import goTo from "vuetify/es5/services/goto";
 
 Vue.use(VueRouter);
@@ -48,6 +49,14 @@ const routes = [
     component: SignIn,
     meta: {
       title: "Sign in - IPFS App",
+    },
+  },
+  {
+    path: "/create",
+    name: "Create idea",
+    component: CreateIdea,
+    meta: {
+      title: "Create idea - IPFS App",
     },
   },
 ];
