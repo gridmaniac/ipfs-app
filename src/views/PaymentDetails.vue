@@ -98,8 +98,8 @@
         </v-col>
         <v-col cols="12" md="6" class="py-0 px-2 pb-1">
           <v-text-field
-            v-model="cardName"
-            :rules="cardNameRules"
+            v-model="cardHolder"
+            :rules="cardHolderRules"
             label="Name on Card"
             required
             filled
@@ -199,6 +199,7 @@
 <script>
 import StripedBox from "@/components/StripedBox";
 import states from "@/utils/states.json";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
@@ -223,8 +224,8 @@ export default {
       stateRules: [(v) => !!v || "Field is required"],
       cardNumber: "",
       cardNumberRules: [(v) => !!v || "Field is required"],
-      cardName: "",
-      cardNameRules: [(v) => !!v || "Field is required"],
+      cardHolder: "",
+      cardHolderRules: [(v) => !!v || "Field is required"],
       expirationDate: null,
       expirationDateRules: [(v) => !!v || "Field is required"],
       calendar: false,
@@ -235,13 +236,36 @@ export default {
     };
   },
 
+  computed: {
+    ...mapGetters(["hasCredentials"]),
+  },
+
   methods: {
-    validate() {
+    async validate() {
       if (this.$refs.form.validate()) {
-        alert("Payment details have been successfuly updated");
-        this.$router.push("/");
+        try {
+          await this.$store.dispatch("signUpAsInvestor", {
+            firstName: this.firstName,
+            lastName: this.lastName,
+            address: this.address,
+            postalCode: this.postalCode,
+            city: this.city,
+            state: this.state,
+            cardNumber: this.cardNumber,
+            cardHolder: this.cardHolder,
+            expirationDate: this.expirationDate,
+            cardCode: this.cardCode,
+          });
+          this.$router.push("/categories");
+        } catch (e) {
+          console.log(e);
+        }
       }
     },
+  },
+
+  created() {
+    if (!this.hasCredentials) this.$router.push("/");
   },
 };
 </script>

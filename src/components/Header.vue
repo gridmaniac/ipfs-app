@@ -10,41 +10,63 @@
       <div @click="goHome()" class="temporary-logo"></div>
 
       <v-spacer></v-spacer>
-      <v-btn
-        color="secondary"
-        class="mr-5 hidden-sm-and-down"
-        small
-        text
-        tile
-        elevation="0"
-        >Link 1</v-btn
-      >
-      <v-btn
-        color="secondary"
-        class="mr-5 hidden-sm-and-down"
-        small
-        text
-        tile
-        elevation="0"
-        >Link 2</v-btn
-      >
-      <v-btn
-        color="secondary"
-        class="mr-5 hidden-sm-and-down"
-        small
-        text
-        tile
-        elevation="0"
-        >Link 3</v-btn
-      >
-      <v-btn
-        color="primary"
-        class="ml-5 hidden-sm-and-down"
-        tile
-        elevation="0"
-        to="signin"
-        >Sign in</v-btn
-      >
+
+      <div v-if="!isLoggedIn">
+        <v-btn
+          color="secondary"
+          class="mr-5 hidden-sm-and-down"
+          small
+          text
+          tile
+          elevation="0"
+          >Link 1</v-btn
+        >
+        <v-btn
+          color="secondary"
+          class="mr-5 hidden-sm-and-down"
+          small
+          text
+          tile
+          elevation="0"
+          >Link 2</v-btn
+        >
+        <v-btn
+          color="secondary"
+          class="mr-5 hidden-sm-and-down"
+          small
+          text
+          tile
+          elevation="0"
+          >Link 3</v-btn
+        >
+        <v-btn
+          color="primary"
+          class="ml-5 hidden-sm-and-down"
+          tile
+          elevation="0"
+          to="signin"
+          >Sign in</v-btn
+        >
+      </div>
+
+      <div v-else>
+        <v-menu offset-y>
+          <template v-slot:activator="{ attrs, on }">
+            <v-btn color="primary" v-bind="attrs" v-on="on" tile elevation="0">
+              Account
+            </v-btn>
+          </template>
+
+          <v-list>
+            <v-list-item link>
+              <v-list-item-title>My profile</v-list-item-title>
+            </v-list-item>
+            <v-list-item link>
+              <v-list-item-title @click="signOut">Sign out</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </div>
 
       <v-app-bar-nav-icon
         @click.stop="isDrawerActive = !isDrawerActive"
@@ -59,6 +81,13 @@
 import Drawer from "@/components/Drawer";
 
 export default {
+  props: {
+    isLoggedIn: {
+      type: Boolean,
+      required: true,
+    },
+  },
+
   components: {
     Drawer,
   },
@@ -72,6 +101,10 @@ export default {
   methods: {
     goHome() {
       this.$router.push({ path: "/" });
+    },
+    signOut() {
+      this.$store.commit("resetState");
+      this.$router.push("/");
     },
   },
 };

@@ -1,5 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import store from "../store";
 import HomePage from "../views/HomePage.vue";
 import Inventors from "../views/Inventors.vue";
 import Investors from "../views/Investors.vue";
@@ -7,6 +8,7 @@ import SignUp from "../views/SignUp.vue";
 import SignIn from "../views/SignIn.vue";
 import CreateIdea from "../views/CreateIdea.vue";
 import PaymentDetails from "../views/PaymentDetails.vue";
+import Categories from "../views/Categories.vue";
 import goTo from "vuetify/es5/services/goto";
 
 Vue.use(VueRouter);
@@ -18,6 +20,7 @@ const routes = [
     component: HomePage,
     meta: {
       title: "IPFS App",
+      requiresNoAuth: true,
     },
   },
   {
@@ -78,6 +81,15 @@ const routes = [
       title: "Payment details - IPFS App",
     },
   },
+  {
+    path: "/categories",
+    name: "Categories",
+    component: Categories,
+    meta: {
+      title: "Categories - IPFS App",
+      requiresAuth: true,
+    },
+  },
 ];
 
 const router = new VueRouter({
@@ -95,6 +107,20 @@ const router = new VueRouter({
     return goTo(scrollTo);
   },
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  let redirect = null;
+  if (to.matched.some((x) => x.meta.requiresAuth)) {
+    if (!store.getters.isLoggedIn) redirect = "/";
+  }
+
+  if (to.matched.some((x) => x.meta.requiresNoAuth)) {
+    if (store.getters.isLoggedIn) redirect = "/categories";
+  }
+
+  if (redirect) return next(redirect);
+  next();
 });
 
 export default router;

@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <Header />
+    <Header :isLoggedIn="isLoggedIn" />
     <v-main>
       <router-view />
     </v-main>
@@ -11,6 +11,7 @@
 <script>
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { mapGetters } from "vuex";
 
 export default {
   name: "App",
@@ -18,6 +19,10 @@ export default {
   components: {
     Header,
     Footer,
+  },
+
+  computed: {
+    ...mapGetters(["isLoggedIn"]),
   },
 
   watch: {

@@ -34,6 +34,7 @@
       <v-text-field
         v-model="email"
         :rules="emailRules"
+        :error-messages="error"
         label="E-mail"
         required
         filled
@@ -41,6 +42,7 @@
         dense
         hide-details="auto"
         class="mb-3"
+        @input="error = ''"
       ></v-text-field>
 
       <v-text-field
@@ -107,19 +109,34 @@ export default {
     ],
     password: "",
     passwordRules: [(v) => !!v || "Password is required"],
+    error: null,
   }),
 
   methods: {
-    validate() {
+    async validate() {
       if (this.$refs.form.validate()) {
-        switch (this.role) {
-          case "inventor":
-            this.$router.push("/create");
-            break;
+        try {
+          this.error = null;
+          await this.$store.dispatch("verifyEmail", this.email);
 
-          case "investor":
-            this.$router.push("/payment");
-            break;
+          this.$store.commit("setCredentials", {
+            firstName: this.firstName,
+            lastName: this.lastName,
+            email: this.email,
+            password: this.password,
+          });
+
+          switch (this.role) {
+            case "inventor":
+              this.$router.push("/create");
+              break;
+
+            case "investor":
+              this.$router.push("/payment");
+              break;
+          }
+        } catch (e) {
+          this.error = e.message;
         }
       }
     },
