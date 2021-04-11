@@ -205,14 +205,17 @@ export default {
       hasDetailsModified: false,
     };
   },
+
   computed: {
     isSubmitActive() {
       return this.files.length > 0 && this.isUploaded;
     },
   },
+
   methods: {
     complete() {
       alert("Onboarding upload proccess complete");
+      this.$router.push("/");
     },
     inputFile() {
       this.isUploaded = false;

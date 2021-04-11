@@ -54,9 +54,20 @@ export default {
   background: #f3f3f3 !important;
 }
 
+.v-select.v-text-field.v-text-field--solo:not(.v-text-field--solo-flat)
+  > .v-input__control
+  > .v-input__slot {
+  background: #fff !important;
+  border: 1px solid #eaeaea;
+}
+
 .v-stepper__step__step {
   width: 40px !important;
   height: 40px !important;
   font-size: 18px !important;
+}
+
+.no-br {
+  border-radius: 0;
 }
 </style>

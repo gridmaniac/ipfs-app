@@ -79,6 +79,13 @@ export default {
   components: {
     StripedBox,
   },
+
+  props: {
+    role: {
+      required: true,
+    },
+  },
+
   data: () => ({
     valid: true,
     firstName: "",
@@ -104,7 +111,17 @@ export default {
 
   methods: {
     validate() {
-      if (this.$refs.form.validate()) this.$router.push("create");
+      if (this.$refs.form.validate()) {
+        switch (this.role) {
+          case "inventor":
+            this.$router.push("/create");
+            break;
+
+          case "investor":
+            this.$router.push("/payment");
+            break;
+        }
+      }
     },
   },
 };

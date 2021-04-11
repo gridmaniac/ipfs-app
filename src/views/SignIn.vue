@@ -52,6 +52,7 @@ export default {
   components: {
     StripedBox,
   },
+
   data: () => ({
     valid: true,
     email: "",
