@@ -15,7 +15,7 @@ Vue.prototype.$http.defaults.baseURL = process.env.VUE_APP_BASE_URL;
 
 const token = localStorage.getItem("token");
 if (token) {
-  Vue.prototype.$http.defaults.headers.common.Authorization = token;
+  Vue.prototype.$http.defaults.headers.common.Authorization = `Bearer ${token}`;
 }
 
 Vue.prototype.$http.interceptors.response.use(null, (error) => {

@@ -132,9 +132,7 @@
                 v-if="files.length > 0 && !isUploaded"
                 class="d-block"
               >
-                <v-progress-linear
-                  :value="files[0].progress"
-                ></v-progress-linear>
+                <v-progress-linear :value="progress"></v-progress-linear>
                 <div class="text-body-2 my-3 blue--text text-center">
                   Uploading your file...
                 </div>
@@ -203,6 +201,7 @@ export default {
       hasTitleModified: false,
       hasProfitModified: false,
       hasDetailsModified: false,
+      progress: 0,
     };
   },
 
@@ -213,21 +212,38 @@ export default {
   },
 
   methods: {
-    complete() {
-      alert("Onboarding upload proccess complete");
-      this.$router.push("/");
+    async complete() {
+      try {
+        await this.$store.dispatch("signUpAsInventor", {
+          title: this.title,
+          profit: this.profit,
+          details: this.details,
+        });
+
+        this.$router.push("/categories");
+      } catch (e) {
+        console.log(e);
+      }
     },
-    inputFile() {
+    async inputFile() {
       this.isUploaded = false;
-      this.files[0].progress = parseInt(this.files[0].progress);
+      this.progress = 0;
 
       const interval = setInterval(() => {
-        this.files[0].progress += 10;
-        if (this.files[0].progress > 100) {
+        this.progress += 10;
+
+        if (this.progress >= 100 && this.isUploaded) {
           this.isUploaded = true;
           clearInterval(interval);
         }
       }, 100);
+
+      try {
+        await this.$store.dispatch("uploadFile", this.files[0].file);
+        this.isUploaded = true;
+      } catch (e) {
+        console.log(e);
+      }
     },
     clearFiles() {
       this.files = [];

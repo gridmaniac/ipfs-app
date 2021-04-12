@@ -44,7 +44,7 @@
           class="ml-5 hidden-sm-and-down"
           tile
           elevation="0"
-          to="signin"
+          to="/signin"
           >Sign in</v-btn
         >
       </div>

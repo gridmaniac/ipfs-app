@@ -1,13 +1,13 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import user from "./modules/user";
-import investor from "./modules/investor";
+import idea from "./modules/idea";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   modules: {
     user,
-    investor,
+    idea,
   },
 });

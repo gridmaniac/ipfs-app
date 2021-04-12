@@ -256,6 +256,7 @@ export default {
             expirationDate: this.expirationDate,
             cardCode: this.cardCode,
           });
+
           this.$router.push("/categories");
         } catch (e) {
           console.log(e);
