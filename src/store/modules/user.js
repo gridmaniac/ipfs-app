@@ -31,6 +31,18 @@ export default {
       axios.defaults.headers.common.Authorization = token;
       commit("setToken", token);
     },
+    async auth({ commit }, payload) {
+      const { data } = await axios.post("/api/auth", {
+        ...payload,
+      });
+
+      const { token, err } = data;
+      if (err) throw new Error(err);
+
+      localStorage.setItem("token", token);
+      axios.defaults.headers.common.Authorization = token;
+      commit("setToken", token);
+    },
   },
   mutations: {
     resetState(state) {

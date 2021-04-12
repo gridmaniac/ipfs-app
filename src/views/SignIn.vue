@@ -7,6 +7,7 @@
       <v-text-field
         v-model="email"
         :rules="emailRules"
+        :error-messages="error"
         label="E-mail"
         required
         filled
@@ -14,11 +15,13 @@
         dense
         hide-details="auto"
         class="mb-3"
+        @input="error = ''"
       ></v-text-field>
 
       <v-text-field
         v-model="password"
         :rules="passwordRules"
+        :error-messages="error"
         label="Password"
         type="password"
         required
@@ -27,6 +30,7 @@
         dense
         hide-details="auto"
         class="mb-3"
+        @input="error = ''"
       ></v-text-field>
 
       <div class="text-body2 mt-5">Lorem Ipsum is simply</div>
@@ -62,11 +66,24 @@ export default {
     ],
     password: "",
     passwordRules: [(v) => !!v || "Password is required"],
+    error: null,
   }),
 
   methods: {
-    validate() {
-      this.$refs.form.validate();
+    async validate() {
+      if (this.$refs.form.validate()) {
+        try {
+          this.error = null;
+          await this.$store.dispatch("auth", {
+            email: this.email,
+            password: this.password,
+          });
+
+          this.$router.push("/categories");
+        } catch (e) {
+          this.error = e.message;
+        }
+      }
     },
   },
 };
