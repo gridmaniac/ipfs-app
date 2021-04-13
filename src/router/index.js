@@ -109,7 +109,14 @@ const router = new VueRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
+const DEFAULT_TITLE = "IPFS App";
+router.afterEach((to) => {
+  Vue.nextTick(() => {
+    document.title = to.meta.title || DEFAULT_TITLE;
+  });
+});
+
+router.beforeEach((to, _, next) => {
   let redirect = null;
   if (to.matched.some((x) => x.meta.requiresAuth)) {
     if (!store.getters.isLoggedIn) redirect = "/";
