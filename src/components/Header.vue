@@ -11,7 +11,7 @@
 
       <v-spacer></v-spacer>
 
-      <div v-if="!isLoggedIn">
+      <div>
         <v-btn
           color="secondary"
           class="mr-5 hidden-sm-and-down"
@@ -40,6 +40,7 @@
           >Link 3</v-btn
         >
         <v-btn
+          v-if="!isLoggedIn"
           color="primary"
           class="ml-5 hidden-sm-and-down"
           tile
@@ -49,19 +50,32 @@
         >
       </div>
 
-      <div v-else>
-        <v-menu offset-y>
+      <div v-if="isLoggedIn">
+        <v-menu left>
           <template v-slot:activator="{ attrs, on }">
-            <v-btn color="primary" v-bind="attrs" v-on="on" tile elevation="0">
+            <!-- <v-btn color="primary" v-bind="attrs" v-on="on" tile elevation="0">
               Account
-            </v-btn>
+            </v-btn> -->
+            <v-avatar
+              v-bind="attrs"
+              v-on="on"
+              size="36"
+              color="primary"
+            ></v-avatar>
           </template>
 
+          <!-- <v-avatar class="primary" size="36"></v-avatar> -->
           <v-list>
-            <v-list-item link>
+            <v-list-item dense link>
+              <v-list-item-icon class="mr-4">
+                <v-icon>mdi-human</v-icon>
+              </v-list-item-icon>
               <v-list-item-title>My profile</v-list-item-title>
             </v-list-item>
-            <v-list-item link>
+            <v-list-item dense link>
+              <v-list-item-icon class="mr-4">
+                <v-icon>mdi-logout</v-icon>
+              </v-list-item-icon>
               <v-list-item-title @click="signOut">Sign out</v-list-item-title>
             </v-list-item>
           </v-list>
@@ -71,6 +85,7 @@
       <v-app-bar-nav-icon
         @click.stop="isDrawerActive = !isDrawerActive"
         class="hidden-md-and-up"
+        v-if="!isLoggedIn"
       ></v-app-bar-nav-icon>
     </v-app-bar>
     <Drawer :active="isDrawerActive" />

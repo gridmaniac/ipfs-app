@@ -72,6 +72,10 @@ export default {
   font-size: 18px !important;
 }
 
+.v-input__append-outer {
+  margin: 0 !important;
+}
+
 .no-br {
   border-radius: 0;
 }
