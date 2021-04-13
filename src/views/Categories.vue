@@ -173,7 +173,11 @@ export default {
   computed: {
     ...mapGetters(["paymentDetails", "ideas", "isInventor"]),
     isDesktop() {
-      return this.$vuetify.breakpoint.md || this.$vuetify.breakpoint.lg;
+      return (
+        this.$vuetify.breakpoint.md ||
+        this.$vuetify.breakpoint.lg ||
+        this.$vuetify.breakpoint.xl
+      );
     },
   },
 
