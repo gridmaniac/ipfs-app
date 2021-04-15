@@ -1,5 +1,5 @@
 <template>
-  <div class="d-md-flex lean my-3">
+  <div class="d-md-flex lean my-3 restore-brightness">
     <v-card
       tile
       class="align-stretch pa-5"

@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container fluid class="landmark">
     <v-row>
       <v-col cols="12" md="6" class="pa-0">
         <v-card tile>

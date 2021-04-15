@@ -5,9 +5,11 @@ import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
 import VueUploadComponent from "vue-upload-component";
+import VueCarousel from "vue-carousel";
 import Axios from "axios";
 
 Vue.component("file-upload", VueUploadComponent);
+Vue.use(VueCarousel);
 
 Vue.config.productionTip = false;
 Vue.prototype.$http = Axios;

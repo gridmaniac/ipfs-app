@@ -52,6 +52,18 @@ export default {
   margin: 0 auto;
 }
 
+.v-carousel__controls {
+  right: 0 !important;
+}
+
+.v-image__image--cover {
+  filter: brightness(50%);
+}
+
+.restore-brightness .v-image__image--cover {
+  filter: brightness(100%);
+}
+
 .v-text-field.v-text-field--solo:not(.v-text-field--solo-flat)
   > .v-input__control
   > .v-input__slot {
@@ -78,5 +90,15 @@ export default {
 
 .no-br {
   border-radius: 0;
+}
+
+.text-small {
+  font-size: 11px;
+}
+
+.v-overlay__content {
+  width: 100% !important;
+  display: flex;
+  justify-content: space-between;
 }
 </style>

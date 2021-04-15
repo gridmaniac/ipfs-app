@@ -38,13 +38,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.v-image__image--cover {
-  filter: brightness(50%);
-}
-
-.v-carousel__controls {
-  right: 0 !important;
-}
-</style>
