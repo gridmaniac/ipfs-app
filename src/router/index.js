@@ -9,6 +9,7 @@ import SignIn from "../views/SignIn.vue";
 import CreateIdea from "../views/CreateIdea.vue";
 import PaymentDetails from "../views/PaymentDetails.vue";
 import Categories from "../views/Categories.vue";
+import Chat from "../views/Chat.vue";
 import goTo from "vuetify/es5/services/goto";
 
 Vue.use(VueRouter);
@@ -87,6 +88,15 @@ const routes = [
     component: Categories,
     meta: {
       title: "Categories - IPFS App",
+      requiresAuth: true,
+    },
+  },
+  {
+    path: "/chat",
+    name: "Chat",
+    component: Chat,
+    meta: {
+      title: "Messages - IPFS App",
       requiresAuth: true,
     },
   },

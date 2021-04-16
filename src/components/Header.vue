@@ -72,6 +72,12 @@
               </v-list-item-icon>
               <v-list-item-title>My profile</v-list-item-title>
             </v-list-item>
+            <v-list-item dense link to="chat">
+              <v-list-item-icon class="mr-4">
+                <v-icon>mdi-chat</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Messages</v-list-item-title>
+            </v-list-item>
             <v-list-item dense link>
               <v-list-item-icon class="mr-4">
                 <v-icon>mdi-logout</v-icon>
