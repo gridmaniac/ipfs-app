@@ -16,6 +16,7 @@
                 max-width="260"
                 :elevation="hover ? 3 : 0"
                 link
+                to="/idea"
               >
                 <v-img :src="x.image" height="200px"
                   ><v-fade-transition>

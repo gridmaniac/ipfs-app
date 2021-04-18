@@ -11,6 +11,7 @@ import PaymentDetails from "../views/PaymentDetails.vue";
 import Categories from "../views/Categories.vue";
 import Messages from "../views/Messages.vue";
 import Profile from "../views/Profile.vue";
+import Idea from "../views/Idea.vue";
 import goTo from "vuetify/es5/services/goto";
 
 Vue.use(VueRouter);
@@ -107,6 +108,15 @@ const routes = [
     component: Profile,
     meta: {
       title: "Profile - IPFS App",
+      requiresAuth: true,
+    },
+  },
+  {
+    path: "/idea",
+    name: "Idea",
+    component: Idea,
+    meta: {
+      title: "Idea - IPFS App",
       requiresAuth: true,
     },
   },

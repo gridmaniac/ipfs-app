@@ -101,4 +101,13 @@ export default {
   display: flex;
   justify-content: space-between;
 }
+
+.v-progress-circular__info {
+  color: #fff !important;
+}
+
+.v-progress-circular__underlay {
+  stroke: #f1f1f1;
+  stroke-width: 1.5 !important;
+}
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <CategoryFilter />
-    <MyList />
+    <PopularIdeas />
 
     <v-row class="lean restore-brightness mt-7 mb-15">
       <v-col cols="12" md="6" class="pa-0 mt-5">
@@ -73,12 +73,12 @@
 <script>
 import { mapGetters } from "vuex";
 import CategoryFilter from "@/components/CategoryFilter";
-import MyList from "@/components/MyList";
+import PopularIdeas from "@/components/PopularIdeas";
 
 export default {
   components: {
     CategoryFilter,
-    MyList,
+    PopularIdeas,
   },
 
   data() {
