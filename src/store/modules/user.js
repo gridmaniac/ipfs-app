@@ -32,13 +32,9 @@ export default {
       axios.defaults.headers.common.Authorization = `Bearer ${token}`;
       commit("setToken", token);
     },
-    async signUpAsInventor({ commit, state, getters }, payload) {
+    async signUpAsInventor({ commit, state }) {
       const { data } = await axios.post("/api/inventors/register", {
         ...state.credentials,
-        idea: {
-          ...payload,
-          files: [{ ...getters.uploadResult }],
-        },
       });
 
       const { token, err } = data;
@@ -60,14 +56,13 @@ export default {
       axios.defaults.headers.common.Authorization = `Bearer ${token}`;
       commit("setToken", token);
     },
-    async getProfile({ commit, dispatch }) {
+    async getProfile({ commit }) {
       const { data } = await axios.get("/api/profile");
 
       const { err } = data;
       if (err) throw new Error(err);
 
       commit("setProfile", data);
-      dispatch("getIdeas");
     },
   },
   mutations: {
@@ -91,5 +86,7 @@ export default {
     hasCredentials: (state) => !!state.credentials,
     isInventor: (state) => state.profile?.role === "inventor",
     paymentDetails: (state) => state.profile?.paymentDetails,
+    firstName: (state) => state.profile?.firstName,
+    lastName: (state) => state.profile?.lastName,
   },
 };

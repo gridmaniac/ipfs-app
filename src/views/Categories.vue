@@ -71,7 +71,6 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 import CategoryFilter from "@/components/CategoryFilter";
 import PopularIdeas from "@/components/PopularIdeas";
 
@@ -83,14 +82,6 @@ export default {
 
   data() {
     return {};
-  },
-
-  computed: {
-    ...mapGetters(["paymentDetails", "ideas", "isInventor"]),
-  },
-
-  created() {
-    this.$store.dispatch("getProfile");
   },
 };
 </script>

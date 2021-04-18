@@ -74,6 +74,7 @@ const routes = [
     component: CreateIdea,
     meta: {
       title: "Create idea - IPFS App",
+      requiresAuth: true,
     },
   },
   {

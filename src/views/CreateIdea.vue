@@ -9,7 +9,9 @@
           <v-divider></v-divider>
           <v-stepper-step :complete="step > 3" step="3"></v-stepper-step>
           <v-divider></v-divider>
-          <v-stepper-step step="4"></v-stepper-step>
+          <v-stepper-step :complete="step > 4" step="4"></v-stepper-step>
+          <v-divider></v-divider>
+          <v-stepper-step step="5"></v-stepper-step>
         </v-stepper-header>
 
         <v-stepper-items>
@@ -106,6 +108,90 @@
 
           <v-stepper-content step="4">
             <div class="text-h5 font-weight-medium text-center">
+              Upload your image
+            </div>
+            <v-card
+              class="my-5 mx-auto d-flex justify-center align-center fill-height flex-column"
+              :color="images.length > 0 ? 'white' : 'grey lighten-4'"
+              elevation="0"
+              height="200px"
+              max-width="400px"
+              tile
+            >
+              <file-upload
+                v-if="images.length === 0"
+                v-model="images"
+                :drop="true"
+                @input-file="inputImage"
+              >
+                <v-icon x-large>mdi-cloud-upload</v-icon>
+                <div class="text-caption my-2">Drag to upload</div>
+                <v-btn color="secondary" small>Choose file</v-btn>
+              </file-upload>
+
+              <v-container
+                fluid
+                v-if="images.length > 0 && !isImageUploaded"
+                class="d-block"
+              >
+                <v-progress-linear :value="progress"></v-progress-linear>
+                <div class="text-body-2 my-3 blue--text text-center">
+                  Uploading your file...
+                </div>
+              </v-container>
+
+              <v-list v-if="images.length > 0 && isImageUploaded">
+                <v-list-item v-for="image in images" :key="image.id">
+                  <v-list-item-avatar>
+                    <v-icon color="primary">mdi-image</v-icon>
+                  </v-list-item-avatar>
+
+                  <v-list-item-content
+                    class="d-flex text-center justify-center"
+                  >
+                    <v-list-item-title
+                      v-text="
+                        $vuetify.breakpoint.sm || $vuetify.breakpoint.xs
+                          ? image.name.substr(0, 25)
+                          : image.name
+                      "
+                    ></v-list-item-title>
+
+                    <v-img
+                      max-width="150px"
+                      height="100px"
+                      class="my-5 restore-brightness"
+                      :src="`https://ipfs.io/ipfs/${uploadImageResult.cid}`"
+                    ></v-img>
+
+                    <v-list-item-subtitle
+                      >Uploaded successful. Thank you</v-list-item-subtitle
+                    >
+                  </v-list-item-content>
+
+                  <v-list-item-action>
+                    <v-btn icon>
+                      <v-icon color="grey lighten-1" @click="clearImages()"
+                        >mdi-delete</v-icon
+                      >
+                    </v-btn>
+                  </v-list-item-action>
+                </v-list-item>
+              </v-list>
+            </v-card>
+
+            <div class="text-center mb-2">
+              <v-btn class="mr-5" elevation="0" @click="step = 3"
+                >Previous</v-btn
+              >
+              <v-btn color="primary" @click="next4" :disabled="!isImageUploaded"
+                >Next</v-btn
+              >
+            </div>
+          </v-stepper-content>
+
+          <v-stepper-content step="5">
+            <div class="text-h5 font-weight-medium text-center">
               Upload your file
             </div>
             <v-card
@@ -132,7 +218,7 @@
                 v-if="files.length > 0 && !isUploaded"
                 class="d-block"
               >
-                <v-progress-linear :value="progress"></v-progress-linear>
+                <v-progress-linear :value="imageProgress"></v-progress-linear>
                 <div class="text-body-2 my-3 blue--text text-center">
                   Uploading your file...
                 </div>
@@ -170,7 +256,7 @@
             </v-card>
 
             <div class="text-center mb-2">
-              <v-btn class="mr-5" elevation="0" @click="step = 3"
+              <v-btn class="mr-5" elevation="0" @click="step = 4"
                 >Previous</v-btn
               >
               <v-btn
@@ -189,12 +275,16 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   data() {
     return {
       step: 1,
       files: [],
+      images: [],
       isUploaded: false,
+      isImageUploaded: false,
       title: null,
       profit: null,
       details: null,
@@ -202,6 +292,7 @@ export default {
       hasProfitModified: false,
       hasDetailsModified: false,
       progress: 0,
+      imageProgress: 0,
     };
   },
 
@@ -209,15 +300,17 @@ export default {
     isSubmitActive() {
       return this.files.length > 0 && this.isUploaded;
     },
+    ...mapGetters(["uploadImageResult"]),
   },
 
   methods: {
-    async complete() {
+    async complete(isPublished = false) {
       try {
-        await this.$store.dispatch("signUpAsInventor", {
+        await this.$store.dispatch("createIdea", {
           title: this.title,
           profit: this.profit,
           details: this.details,
+          isPublished,
         });
 
         this.$router.push("/categories");
@@ -247,6 +340,30 @@ export default {
     },
     clearFiles() {
       this.files = [];
+    },
+    async inputImage() {
+      this.isImageUploaded = false;
+      this.imageProgress = 0;
+
+      const interval = setInterval(() => {
+        this.imageProgress += 10;
+
+        if (this.imageProgress >= 100 && this.isImageUploaded) {
+          this.isImageUploaded = true;
+          clearInterval(interval);
+        }
+      }, 100);
+
+      try {
+        await this.$store.dispatch("uploadImage", this.images[0].file);
+        this.isImageUploaded = true;
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    clearImages() {
+      this.isImageUploaded = false;
+      this.images = [];
     },
     validateTitle() {
       if (!this.hasTitleModified) return null;
@@ -282,6 +399,10 @@ export default {
       this.hasDetailsModified = true;
       if (this.validateDetails()) return;
       this.step = 4;
+    },
+    next4() {
+      if (!this.isImageUploaded) return;
+      this.step = 5;
     },
   },
 };

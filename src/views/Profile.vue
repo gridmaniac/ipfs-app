@@ -11,9 +11,11 @@
           <v-btn color="primary" block elevation="0" tile>Edit profile</v-btn>
         </v-col>
         <v-col cols="8" class="mt-11">
-          <div class="text-h2 font-weight-medium white--text">Name Surname</div>
+          <div class="text-h2 font-weight-medium white--text">
+            {{ firstName }} {{ lastName }}
+          </div>
           <div class="text-body1 font-weight-medium white--text mt-1">
-            Lorem impsum
+            My ideas
           </div>
           <v-tabs
             v-if="isSelected"
@@ -47,21 +49,37 @@
             </v-tab-item>
           </v-tabs-items>
 
-          <div class="d-flex flex-wrap mt-5 align-center" v-if="!isSelected">
-            <v-hover v-for="x in items" :key="x.id" v-slot="{ hover }">
+          <v-sheet
+            v-if="isLoadingIdeas"
+            height="200"
+            class="d-flex align-center justify-center fill-height"
+            color="transparent"
+          >
+            <v-progress-circular
+              :size="70"
+              :width="7"
+              color="primary"
+              indeterminate
+            ></v-progress-circular
+          ></v-sheet>
+
+          <div
+            class="d-flex flex-wrap mt-5 align-center"
+            v-if="!isSelected && !isLoadingIdeas"
+          >
+            <v-hover v-for="x in userIdeas" :key="x.id" v-slot="{ hover }">
               <v-card
-                class="mr-5 my-3 restore-brightness"
+                class="mr-5 my-3"
                 tile
-                max-width="150"
+                width="200"
                 :elevation="hover ? 3 : 0"
                 link
                 outlined
                 @click="isSelected = true"
               >
-                <v-img :src="x.image" height="100px"
+                <v-img :src="`https://ipfs.io/ipfs/${x.image}`" height="140px"
                   ><v-btn
                     small
-                    outlined
                     rounded
                     color="light-green"
                     class="ma-3"
@@ -69,7 +87,6 @@
                     >Published</v-btn
                   ><v-btn
                     small
-                    outlined
                     rounded
                     color="primary"
                     class="ma-3"
@@ -103,6 +120,8 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   data() {
     return {
@@ -110,82 +129,82 @@ export default {
       title: null,
       hasTitleModified: false,
       isSelected: false,
-      items: [
-        {
-          id: 1,
-          image: require("@/assets/img/placeholder.jpeg"),
-          title:
-            "TitlefasffafsfafwfawffwTitlefasffafsfafwfawffwTitlefasffafsfafwfawffw",
-          profit:
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-          author: {
-            firstName: "Name",
-            lastName: "Surname",
-          },
-          date: "March 29, 2021",
-        },
-        {
-          id: 2,
-          image: require("@/assets/img/placeholder.jpeg"),
-          title: "Title",
-          profit:
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-          author: {
-            firstName: "Name",
-            lastName: "Surname",
-          },
-          date: "March 29, 2021",
-          isPublished: true,
-        },
-        {
-          id: 3,
-          image: require("@/assets/img/placeholder.jpeg"),
-          title: "Title",
-          profit:
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-          author: {
-            firstName: "Name",
-            lastName: "Surname",
-          },
-          date: "March 29, 2021",
-        },
-        {
-          id: 4,
-          image: require("@/assets/img/placeholder.jpeg"),
-          title: "Title",
-          profit:
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-          author: {
-            firstName: "Name",
-            lastName: "Surname",
-          },
-          date: "March 29, 2021",
-        },
-        {
-          id: 5,
-          image: require("@/assets/img/placeholder.jpeg"),
-          title: "Title",
-          profit:
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-          author: {
-            firstName: "Name",
-            lastName: "Surname",
-          },
-          date: "March 29, 2021",
-        },
-        {
-          id: 6,
-          image: require("@/assets/img/placeholder.jpeg"),
-          title: "Title",
-          profit:
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-          author: {
-            firstName: "Name",
-            lastName: "Surname",
-          },
-          date: "March 29, 2021",
-        },
-      ],
+      // items: [
+      //   {
+      //     id: 1,
+      //     image: require("@/assets/img/placeholder.jpeg"),
+      //     title:
+      //       "TitlefasffafsfafwfawffwTitlefasffafsfafwfawffwTitlefasffafsfafwfawffw",
+      //     profit:
+      //       "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+      //     author: {
+      //       firstName: "Name",
+      //       lastName: "Surname",
+      //     },
+      //     date: "March 29, 2021",
+      //   },
+      //   {
+      //     id: 2,
+      //     image: require("@/assets/img/placeholder.jpeg"),
+      //     title: "Title",
+      //     profit:
+      //       "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+      //     author: {
+      //       firstName: "Name",
+      //       lastName: "Surname",
+      //     },
+      //     date: "March 29, 2021",
+      //     isPublished: true,
+      //   },
+      //   {
+      //     id: 3,
+      //     image: require("@/assets/img/placeholder.jpeg"),
+      //     title: "Title",
+      //     profit:
+      //       "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+      //     author: {
+      //       firstName: "Name",
+      //       lastName: "Surname",
+      //     },
+      //     date: "March 29, 2021",
+      //   },
+      //   {
+      //     id: 4,
+      //     image: require("@/assets/img/placeholder.jpeg"),
+      //     title: "Title",
+      //     profit:
+      //       "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+      //     author: {
+      //       firstName: "Name",
+      //       lastName: "Surname",
+      //     },
+      //     date: "March 29, 2021",
+      //   },
+      //   {
+      //     id: 5,
+      //     image: require("@/assets/img/placeholder.jpeg"),
+      //     title: "Title",
+      //     profit:
+      //       "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+      //     author: {
+      //       firstName: "Name",
+      //       lastName: "Surname",
+      //     },
+      //     date: "March 29, 2021",
+      //   },
+      //   {
+      //     id: 6,
+      //     image: require("@/assets/img/placeholder.jpeg"),
+      //     title: "Title",
+      //     profit:
+      //       "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+      //     author: {
+      //       firstName: "Name",
+      //       lastName: "Surname",
+      //     },
+      //     date: "March 29, 2021",
+      //   },
+      // ],
     };
   },
 
@@ -208,6 +227,14 @@ export default {
 
       return 1;
     },
+    ...mapGetters([
+      "paymentDetails",
+      "userIdeas",
+      "isInventor",
+      "isLoadingIdeas",
+      "firstName",
+      "lastName",
+    ]),
   },
 
   methods: {
@@ -217,6 +244,12 @@ export default {
       if (this.title.length > 100) return "Must be at most 100 characters long";
       return null;
     },
+  },
+
+  async created() {
+    this.$store.dispatch("getProfile");
+
+    await this.$store.dispatch("getUserIdeas");
   },
 };
 </script>

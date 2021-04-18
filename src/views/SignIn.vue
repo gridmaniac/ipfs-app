@@ -36,7 +36,8 @@
       <div class="text-body2 mt-5">Lorem Ipsum is simply</div>
 
       <v-btn
-        :disabled="!valid"
+        :disabled="!valid || isLoading"
+        :loading="isLoading"
         color="primary"
         class="mt-4 mb-1"
         @click="validate"
@@ -67,12 +68,14 @@ export default {
     password: "",
     passwordRules: [(v) => !!v || "Password is required"],
     error: null,
+    isLoading: false,
   }),
 
   methods: {
     async validate() {
       if (this.$refs.form.validate()) {
         try {
+          this.isLoading = true;
           this.error = null;
           await this.$store.dispatch("auth", {
             email: this.email,
@@ -82,6 +85,7 @@ export default {
           this.$router.push("/categories");
         } catch (e) {
           this.error = e.message;
+          this.isLoading = false;
         }
       }
     },

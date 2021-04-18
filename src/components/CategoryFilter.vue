@@ -7,7 +7,12 @@
         ><v-select
           v-else
           class="no-br"
-          :items="items"
+          :items="
+            categories.map((x) => ({
+              value: x._id,
+              text: x.title,
+            }))
+          "
           label="Categories"
           solo
           dense
@@ -52,15 +57,31 @@
     </v-row>
     <v-row>
       <v-col md="3" v-if="isDesktop">
-        <v-list nav dense dark color="grey darken-3" max-height="400">
+        <v-list
+          nav
+          dense
+          dark
+          color="grey darken-3"
+          height="400"
+          class="overflow-y-auto"
+        >
+          <div
+            v-if="isLoadingCategories"
+            class="d-flex justify-center align-center fill-height"
+          >
+            <v-progress-circular
+              color="primary"
+              indeterminate
+            ></v-progress-circular>
+          </div>
           <v-list-item-group v-model="selectedItem" color="primary">
             <v-list-item
-              v-for="(item, i) in items"
+              v-for="(item, i) in categories"
               :key="i"
               @click="startSearch"
             >
               <v-list-item-content>
-                <v-list-item-title v-text="item"></v-list-item-title>
+                <v-list-item-title v-text="item.title"></v-list-item-title>
               </v-list-item-content>
             </v-list-item>
           </v-list-item-group>
@@ -115,23 +136,14 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   data() {
     return {
       search: "",
       isLoading: false,
       selectedItem: 0,
-      items: [
-        "Category 1",
-        "Category 2",
-        "Category 3",
-        "Category 5",
-        "Category 6",
-        "Category 7",
-        "Category 8",
-        "Category 9",
-        "Category 10",
-      ],
       slides: [
         {
           src: require("@/assets/img/placeholder.jpeg"),
@@ -175,6 +187,7 @@ export default {
         this.$vuetify.breakpoint.xl
       );
     },
+    ...mapGetters(["categories", "isLoadingCategories"]),
   },
 
   methods: {
@@ -184,6 +197,10 @@ export default {
         this.isLoading = false;
       }, 500);
     },
+  },
+
+  created() {
+    this.$store.dispatch("getCategories");
   },
 };
 </script>
