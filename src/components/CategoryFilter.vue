@@ -32,7 +32,7 @@
           class="no-br"
           hide-details=""
           @keyup.enter="startSearch"
-          @click:clear="startSearch"
+          @click:clear="clearSearch"
         >
           <template v-slot:append-outer class="ma-0">
             <v-btn
@@ -89,7 +89,7 @@
       </v-col>
       <v-col md="9" cols="12">
         <v-sheet
-          v-if="isLoading"
+          v-if="isCategoryLoading"
           height="400"
           class="d-flex align-center justify-center fill-height"
           color="grey lighten-4"
@@ -109,24 +109,26 @@
           v-else
         >
           <v-carousel-item
-            v-for="(slide, i) in slides"
-            :key="i"
-            :src="slide.src"
+            v-for="x in categoryIdeas"
+            :key="x._id"
+            :src="`https://ipfs.io/ipfs/${x.image}`"
           >
             <v-sheet
               color="transparent"
               class="d-flex flex-column align-center justify-center fill-height"
             >
               <div class="display-1 font-weight-medium">
-                {{ slide.title }}
+                {{ x.title }}
               </div>
               <div
                 class="body-2 mt-3"
                 :style="'max-width: ' + (isDesktop ? '350px' : '200px')"
               >
-                {{ slide.profit }}
+                {{ x.profit }}
               </div>
-              <v-btn color="primary" class="mt-3">Button</v-btn>
+              <v-btn color="primary" class="mt-3" :to="`/ideas/${x._id}`"
+                >Button</v-btn
+              >
             </v-sheet>
           </v-carousel-item>
         </v-carousel>
@@ -144,38 +146,6 @@ export default {
       search: "",
       isLoading: false,
       selectedItem: 0,
-      slides: [
-        {
-          src: require("@/assets/img/placeholder.jpeg"),
-          title: "Lorem ipsum",
-          profit:
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum is simply dummy text of th printing and typesetting industry.",
-        },
-        {
-          src: require("@/assets/img/placeholder.jpeg"),
-          title: "Lorem ipsum",
-          profit:
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum is simply dummy text of th printing and typesetting industry.",
-        },
-        {
-          src: require("@/assets/img/placeholder.jpeg"),
-          title: "Lorem ipsum",
-          profit:
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum is simply dummy text of th printing and typesetting industry.",
-        },
-        {
-          src: require("@/assets/img/placeholder.jpeg"),
-          title: "Lorem ipsum",
-          profit:
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum is simply dummy text of th printing and typesetting industry.",
-        },
-        {
-          src: require("@/assets/img/placeholder.jpeg"),
-          title: "Lorem ipsum",
-          profit:
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum is simply dummy text of th printing and typesetting industry.",
-        },
-      ],
     };
   },
 
@@ -187,20 +157,34 @@ export default {
         this.$vuetify.breakpoint.xl
       );
     },
-    ...mapGetters(["categories", "isLoadingCategories"]),
+    ...mapGetters([
+      "categories",
+      "isLoadingCategories",
+      "isCategoryLoading",
+      "categoryIdeas",
+    ]),
   },
 
   methods: {
+    clearSearch() {
+      this.search = null;
+      this.startSearch();
+    },
     startSearch() {
-      this.isLoading = true;
-      setTimeout(() => {
-        this.isLoading = false;
-      }, 500);
+      this.$nextTick(() => {
+        this.$store.dispatch("getIdeasByCategory", {
+          id: this.categories[this.selectedItem]._id,
+          search: this.search,
+        });
+      });
     },
   },
 
-  created() {
-    this.$store.dispatch("getCategories");
+  async created() {
+    this.$store.commit("setCategoryIdeas", []);
+    this.$store.commit("setCategoryLoading", true);
+    await this.$store.dispatch("getCategories");
+    this.startSearch();
   },
 };
 </script>

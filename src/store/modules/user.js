@@ -6,6 +6,8 @@ const getDefaultState = () => {
     token: localStorage.getItem("token") || "",
     credentials: null,
     profile: {},
+    investor: {},
+    isLoading: true,
   };
 };
 
@@ -57,12 +59,22 @@ export default {
       commit("setToken", token);
     },
     async getProfile({ commit }) {
+      commit("setIsLoading", true);
       const { data } = await axios.get("/api/profile");
+      commit("setIsLoading", false);
 
       const { err } = data;
       if (err) throw new Error(err);
 
       commit("setProfile", data);
+    },
+    async getInvestorById({ commit }, id) {
+      const { data } = await axios.get(`/api/investors/${id}`);
+
+      const { err } = data;
+      if (err) throw new Error(err);
+
+      commit("setInvestor", data);
     },
   },
   mutations: {
@@ -76,8 +88,14 @@ export default {
     setToken(state, token) {
       state.token = token;
     },
-    setProfile(state, profile) {
-      state.profile = profile;
+    setProfile(state, value) {
+      state.profile = value;
+    },
+    setInvestor(state, value) {
+      state.investor = value;
+    },
+    setIsLoading(state, value) {
+      state.isLoading = value;
     },
   },
   state: getDefaultState(),
@@ -88,5 +106,7 @@ export default {
     paymentDetails: (state) => state.profile?.paymentDetails,
     firstName: (state) => state.profile?.firstName,
     lastName: (state) => state.profile?.lastName,
+    isLoadingProfile: (state) => state.isLoading,
+    investor: (state) => state.investor,
   },
 };

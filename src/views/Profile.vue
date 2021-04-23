@@ -15,19 +15,24 @@
             {{ firstName }} {{ lastName }}
           </div>
           <div class="text-body1 font-weight-medium white--text mt-1">
-            My ideas
+            {{ isInventor ? "My ideas" : "Investor" }}
           </div>
           <v-tabs
-            v-if="isSelected"
+            v-if="isSelected && isInventor && !isIdeaLoading"
             v-model="tab"
             background-color="transparent"
             class="mt-5"
           >
-            <v-tab> Heading 1 </v-tab>
-            <v-tab> Upload </v-tab>
+            <v-tab> Title </v-tab>
+            <v-tab> Profit </v-tab>
+            <v-tab> Details </v-tab>
+            <v-tab> File </v-tab>
           </v-tabs>
 
-          <v-tabs-items v-if="isSelected" v-model="tab">
+          <v-tabs-items
+            v-if="isSelected && isInventor && !isIdeaLoading"
+            v-model="tab"
+          >
             <v-tab-item>
               <v-textarea
                 v-model="title"
@@ -41,16 +46,59 @@
               ></v-textarea>
             </v-tab-item>
             <v-tab-item>
+              <v-textarea
+                v-model="profit"
+                :error-messages="validateProfit()"
+                lazy-validation
+                :counter="200"
+                solo
+                rows="3"
+                placeholder="Lorem ipsum"
+                @input="hasProfitModified = true"
+              ></v-textarea>
+            </v-tab-item>
+            <v-tab-item>
+              <v-textarea
+                v-model="details"
+                :error-messages="validateDetails()"
+                lazy-validation
+                :counter="500"
+                solo
+                rows="3"
+                placeholder="Lorem ipsum"
+                @input="hasDetailsModified = true"
+              ></v-textarea>
+            </v-tab-item>
+            <v-tab-item>
               <div class="text-body1 grey--text mt-4 ml-4">
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry.
+                <v-btn
+                  text
+                  small
+                  color="primary"
+                  @click="downloadFile(idea.files && idea.files[0].cid)"
+                  >{{
+                    `https://ipfs.io/ipfs/${idea.files && idea.files[0].cid}`
+                  }}</v-btn
+                >
               </div>
-              <v-btn class="primary mt-5 ml-4" elevation="0">Button</v-btn>
             </v-tab-item>
           </v-tabs-items>
+          <div
+            v-if="isSelected && isInventor && !isIdeaLoading"
+            class="d-flex justify-end"
+          >
+            <v-btn color="primary" @click="saveIdea">Save</v-btn>
+            <v-btn
+              v-if="!idea.isPublished"
+              color="success"
+              @click="saveAndPublishIdea"
+              class="ml-3"
+              >Save & Publish</v-btn
+            >
+          </div>
 
           <v-sheet
-            v-if="isLoadingIdeas"
+            v-if="isLoadingIdeas || isIdeaLoading"
             height="200"
             class="d-flex align-center justify-center fill-height"
             color="transparent"
@@ -65,9 +113,9 @@
 
           <div
             class="d-flex flex-wrap mt-5 align-center"
-            v-if="!isSelected && !isLoadingIdeas"
+            v-if="!isSelected && !isLoadingIdeas && isInventor"
           >
-            <v-hover v-for="x in userIdeas" :key="x.id" v-slot="{ hover }">
+            <v-hover v-for="x in userIdeas" :key="x._id" v-slot="{ hover }">
               <v-card
                 class="mr-5 my-3"
                 tile
@@ -75,7 +123,7 @@
                 :elevation="hover ? 3 : 0"
                 link
                 outlined
-                @click="isSelected = true"
+                @click="selectIdea(x._id)"
               >
                 <v-img :src="`https://ipfs.io/ipfs/${x.image}`" height="140px"
                   ><v-btn
@@ -127,84 +175,12 @@ export default {
     return {
       tab: null,
       title: null,
+      profit: null,
+      details: null,
       hasTitleModified: false,
+      hasProfitModified: false,
+      hasDetailsModified: false,
       isSelected: false,
-      // items: [
-      //   {
-      //     id: 1,
-      //     image: require("@/assets/img/placeholder.jpeg"),
-      //     title:
-      //       "TitlefasffafsfafwfawffwTitlefasffafsfafwfawffwTitlefasffafsfafwfawffw",
-      //     profit:
-      //       "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      //     author: {
-      //       firstName: "Name",
-      //       lastName: "Surname",
-      //     },
-      //     date: "March 29, 2021",
-      //   },
-      //   {
-      //     id: 2,
-      //     image: require("@/assets/img/placeholder.jpeg"),
-      //     title: "Title",
-      //     profit:
-      //       "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      //     author: {
-      //       firstName: "Name",
-      //       lastName: "Surname",
-      //     },
-      //     date: "March 29, 2021",
-      //     isPublished: true,
-      //   },
-      //   {
-      //     id: 3,
-      //     image: require("@/assets/img/placeholder.jpeg"),
-      //     title: "Title",
-      //     profit:
-      //       "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      //     author: {
-      //       firstName: "Name",
-      //       lastName: "Surname",
-      //     },
-      //     date: "March 29, 2021",
-      //   },
-      //   {
-      //     id: 4,
-      //     image: require("@/assets/img/placeholder.jpeg"),
-      //     title: "Title",
-      //     profit:
-      //       "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      //     author: {
-      //       firstName: "Name",
-      //       lastName: "Surname",
-      //     },
-      //     date: "March 29, 2021",
-      //   },
-      //   {
-      //     id: 5,
-      //     image: require("@/assets/img/placeholder.jpeg"),
-      //     title: "Title",
-      //     profit:
-      //       "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      //     author: {
-      //       firstName: "Name",
-      //       lastName: "Surname",
-      //     },
-      //     date: "March 29, 2021",
-      //   },
-      //   {
-      //     id: 6,
-      //     image: require("@/assets/img/placeholder.jpeg"),
-      //     title: "Title",
-      //     profit:
-      //       "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      //     author: {
-      //       firstName: "Name",
-      //       lastName: "Surname",
-      //     },
-      //     date: "March 29, 2021",
-      //   },
-      // ],
     };
   },
 
@@ -216,17 +192,6 @@ export default {
         this.$vuetify.breakpoint.xl
       );
     },
-    sliderValue() {
-      if (this.isDesktop) {
-        return 3;
-      }
-
-      if (this.$vuetify.breakpoint.sm) {
-        return 2;
-      }
-
-      return 1;
-    },
     ...mapGetters([
       "paymentDetails",
       "userIdeas",
@@ -234,6 +199,10 @@ export default {
       "isLoadingIdeas",
       "firstName",
       "lastName",
+      "idea",
+      "isInventor",
+      "isLoadingProfile",
+      "isIdeaLoading",
     ]),
   },
 
@@ -244,11 +213,76 @@ export default {
       if (this.title.length > 100) return "Must be at most 100 characters long";
       return null;
     },
+    validateProfit() {
+      if (!this.hasProfitModified) return null;
+      if (!this.profit) return "Field is required";
+      if (this.profit.length > 200)
+        return "Must be at most 200 characters long";
+      return null;
+    },
+    validateDetails() {
+      if (!this.hasDetailsModified) return null;
+      if (!this.details) return "Field is required";
+      if (this.details.length > 500)
+        return "Must be at most 500 characters long";
+      return null;
+    },
+    async selectIdea(id) {
+      this.isSelected = true;
+      await this.$store.dispatch("getIdeaById", id);
+      this.title = this.idea.title;
+      this.profit = this.idea.profit;
+      this.details = this.idea.details;
+    },
+    downloadFile(cid) {
+      window.open(`https://ipfs.io/ipfs/${cid}`);
+    },
+    async saveIdea() {
+      if (
+        this.validateTitle() ||
+        this.validateProfit() ||
+        this.validateDetails()
+      )
+        return;
+
+      await this.$store.dispatch("updateIdea", {
+        id: this.idea._id,
+        payload: {
+          title: this.title,
+          profit: this.profit,
+          details: this.details,
+        },
+      });
+
+      this.isSelected = false;
+      this.$store.dispatch("getUserIdeas");
+    },
+
+    async saveAndPublishIdea() {
+      if (
+        this.validateTitle() ||
+        this.validateProfit() ||
+        this.validateDetails()
+      )
+        return;
+
+      await this.$store.dispatch("updateIdea", {
+        id: this.idea._id,
+        payload: {
+          title: this.title,
+          profit: this.profit,
+          details: this.details,
+          isPublished: true,
+        },
+      });
+
+      this.isSelected = false;
+      this.$store.dispatch("getUserIdeas");
+    },
   },
 
   async created() {
     this.$store.dispatch("getProfile");
-
     await this.$store.dispatch("getUserIdeas");
   },
 };

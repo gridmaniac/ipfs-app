@@ -21,11 +21,29 @@
             </div>
             <v-card
               class="my-5 mx-auto"
-              color="grey lighten-4"
               elevation="0"
               height="200px"
               max-width="600px"
             >
+              <v-autocomplete
+                v-model="category"
+                :error-messages="validateCategory()"
+                :items="
+                  categories.map((x) => ({
+                    value: x._id,
+                    text: x.title,
+                  }))
+                "
+                @input="hasCategoryModified = true"
+                label="Category"
+                hide-details="auto"
+                required
+                filled
+                solo
+                dense
+                color="white"
+                class="no-br mb-3"
+              ></v-autocomplete>
               <v-textarea
                 v-model="title"
                 :error-messages="validateTitle()"
@@ -33,7 +51,7 @@
                 :counter="100"
                 solo
                 auto-grow
-                rows="8"
+                rows="5"
                 placeholder="Lorem ipsum"
                 @input="hasTitleModified = true"
               ></v-textarea>
@@ -123,6 +141,7 @@
                 v-model="images"
                 :drop="true"
                 @input-file="inputImage"
+                :size="5 * 1024"
               >
                 <v-icon x-large>mdi-cloud-upload</v-icon>
                 <div class="text-caption my-2">Drag to upload</div>
@@ -285,9 +304,11 @@ export default {
       images: [],
       isUploaded: false,
       isImageUploaded: false,
+      category: null,
       title: null,
       profit: null,
       details: null,
+      hasCategoryModified: false,
       hasTitleModified: false,
       hasProfitModified: false,
       hasDetailsModified: false,
@@ -300,20 +321,21 @@ export default {
     isSubmitActive() {
       return this.files.length > 0 && this.isUploaded;
     },
-    ...mapGetters(["uploadImageResult"]),
+    ...mapGetters(["uploadImageResult", "categories"]),
   },
 
   methods: {
     async complete(isPublished = false) {
       try {
         await this.$store.dispatch("createIdea", {
+          category: this.category,
           title: this.title,
           profit: this.profit,
           details: this.details,
           isPublished,
         });
 
-        this.$router.push("/categories");
+        this.$router.push("/profile");
       } catch (e) {
         console.log(e);
       }
@@ -365,6 +387,11 @@ export default {
       this.isImageUploaded = false;
       this.images = [];
     },
+    validateCategory() {
+      if (!this.hasCategoryModified) return null;
+      if (!this.category) return "Field is required";
+      return null;
+    },
     validateTitle() {
       if (!this.hasTitleModified) return null;
       if (!this.title) return "Field is required";
@@ -386,8 +413,9 @@ export default {
       return null;
     },
     next1() {
+      this.hasCategoryModified = true;
       this.hasTitleModified = true;
-      if (this.validateTitle()) return;
+      if (this.validateTitle() || this.validateCategory()) return;
       this.step = 2;
     },
     next2() {
@@ -404,6 +432,10 @@ export default {
       if (!this.isImageUploaded) return;
       this.step = 5;
     },
+  },
+
+  created() {
+    this.$store.dispatch("getCategories");
   },
 };
 </script>

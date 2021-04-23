@@ -1,8 +1,12 @@
 <template>
   <v-container fluid class="pa-0">
-    <v-img height="550px" :src="require('@/assets/img/placeholder.jpeg')"
+    <v-img
+      height="550px"
+      :src="idea.image && `https://ipfs.io/ipfs/${idea.image}`"
       ><div class="d-flex justify-space-between lean px-5 py-10">
-        <v-btn outlined color="white" rounded small>CATEGORY NAME</v-btn>
+        <v-btn outlined color="white" rounded small>{{
+          idea.category && idea.category.title
+        }}</v-btn>
         <div>
           <v-btn x-small outlined color="white" rounded fab class="mr-3"
             ><v-icon>mdi-link</v-icon></v-btn
@@ -19,14 +23,12 @@
         </div>
       </div>
       <div class="text-h3 text-center white--text font-weight-medium mt-7">
-        Lorem impsum
+        {{ idea.title }}
       </div>
       <div
         class="text-subtitle-2 text-center grey--text font-weight-medium text-limiter mx-auto mt-3"
       >
-        Lorem Ipsum is simply dummy text of the printing and typesetting
-        industry.Lorem Ipsum is simply dummy text of th printing and typesetting
-        industry.
+        {{ idea.details }}
       </div>
       <div class="d-flex justify-space-between stats mx-auto mt-15">
         <div>
@@ -70,7 +72,7 @@
     <v-sheet color="grey lighten-5">
       <!-- <div class="d-flex flex-wrap justify-start lean py-5 mx-auto"> -->
       <v-row class="pa-0 lean py-5">
-        <v-col md="3" cols="12" v-for="x in items" :key="x.id">
+        <v-col md="3" cols="12" v-for="x in ideas" :key="x.id">
           <v-hover v-slot="{ hover }">
             <v-card
               class="mb-1 mx-auto restore-brightness"
@@ -78,8 +80,9 @@
               max-width="260"
               :elevation="hover ? 3 : 0"
               link
+              :to="`/ideas/${x._id}`"
             >
-              <v-img :src="x.image" height="200px"
+              <v-img :src="`https://ipfs.io/ipfs/${x.image}`" height="200px"
                 ><v-fade-transition>
                   <v-overlay
                     v-if="hover"
@@ -90,7 +93,13 @@
                     <v-btn fab x-small outlined color="white" class="ma-3"
                       ><v-icon> mdi-heart-outline </v-icon></v-btn
                     >
-                    <v-btn small outlined rounded color="white" class="ma-3"
+                    <v-btn
+                      small
+                      outlined
+                      rounded
+                      color="white"
+                      class="ma-3"
+                      @click.prevent="downloadFile(x.files[0].cid)"
                       >Download <v-icon right> mdi-arrow-down </v-icon></v-btn
                     >
                   </v-overlay>
@@ -113,13 +122,13 @@
                         class="ml-2"
                       ></v-avatar>
                       <div class="text-small ml-2">
-                        {{ x.author.firstName + " " + x.author.lastName }}
+                        {{ x.user.firstName + " " + x.user.lastName }}
                       </div>
                     </div>
                   </v-col>
                   <v-col cols="5"
                     ><div class="text-small">
-                      {{ x.date }}
+                      {{ formatDate(x.date) }}
                     </div></v-col
                   >
                 </v-row>
@@ -219,90 +228,41 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import moment from "moment";
+
 export default {
   data() {
     return {
       interval: {},
       value: 0,
-      items: [
-        {
-          id: 1,
-          image: require("@/assets/img/placeholder.jpeg"),
-          title: "Title",
-          profit:
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-          author: {
-            firstName: "Name",
-            lastName: "Surname",
-          },
-          date: "March 29, 2021",
-        },
-        {
-          id: 2,
-          image: require("@/assets/img/placeholder.jpeg"),
-          title: "Title",
-          profit:
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-          author: {
-            firstName: "Name",
-            lastName: "Surname",
-          },
-          date: "March 29, 2021",
-        },
-        {
-          id: 3,
-          image: require("@/assets/img/placeholder.jpeg"),
-          title: "Title",
-          profit:
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-          author: {
-            firstName: "Name",
-            lastName: "Surname",
-          },
-          date: "March 29, 2021",
-        },
-        {
-          id: 4,
-          image: require("@/assets/img/placeholder.jpeg"),
-          title: "Title",
-          profit:
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-          author: {
-            firstName: "Name",
-            lastName: "Surname",
-          },
-          date: "March 29, 2021",
-        },
-        {
-          id: 5,
-          image: require("@/assets/img/placeholder.jpeg"),
-          title: "Title",
-          profit:
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-          author: {
-            firstName: "Name",
-            lastName: "Surname",
-          },
-          date: "March 29, 2021",
-        },
-        {
-          id: 6,
-          image: require("@/assets/img/placeholder.jpeg"),
-          title: "Title",
-          profit:
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-          author: {
-            firstName: "Name",
-            lastName: "Surname",
-          },
-          date: "March 29, 2021",
-        },
-      ],
     };
   },
+
+  computed: {
+    ...mapGetters(["idea", "ideas"]),
+  },
+
+  methods: {
+    formatDate(date) {
+      return moment(date).format("MMM DD, YYYY");
+    },
+    downloadFile(cid) {
+      window.open(`https://ipfs.io/ipfs/${cid}`);
+    },
+  },
+
   beforeDestroy() {
     clearInterval(this.interval);
   },
+
+  watch: {
+    $route() {
+      const { id } = this.$route.params;
+      this.$store.dispatch("getIdeaById", id);
+    },
+  },
+
   mounted() {
     this.interval = setInterval(() => {
       if (this.value === 100) {
@@ -310,6 +270,12 @@ export default {
       }
       this.value += 10;
     }, 500);
+  },
+
+  created() {
+    const { id } = this.$route.params;
+    this.$store.dispatch("getIdeaById", id);
+    this.$store.dispatch("getIdeas");
   },
 };
 </script>

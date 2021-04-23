@@ -66,13 +66,13 @@
 
           <!-- <v-avatar class="primary" size="36"></v-avatar> -->
           <v-list>
-            <v-list-item dense link to="profile">
+            <v-list-item dense link to="/profile">
               <v-list-item-icon class="mr-4">
                 <v-icon>mdi-human</v-icon>
               </v-list-item-icon>
               <v-list-item-title>My profile</v-list-item-title>
             </v-list-item>
-            <v-list-item dense link to="messages">
+            <v-list-item dense link to="/messages">
               <v-list-item-icon class="mr-4">
                 <v-icon>mdi-chat</v-icon>
               </v-list-item-icon>

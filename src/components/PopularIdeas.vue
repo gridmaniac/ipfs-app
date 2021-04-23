@@ -8,7 +8,7 @@
           :navigation-enabled="true"
           :pagination-enabled="false"
         >
-          <slide v-for="x in items" :key="x.id">
+          <slide v-for="x in ideas" :key="x._id">
             <v-hover v-slot="{ hover }">
               <v-card
                 class="mx-auto my-5 restore-brightness"
@@ -16,9 +16,9 @@
                 max-width="260"
                 :elevation="hover ? 3 : 0"
                 link
-                to="/idea"
+                :to="`/ideas/${x._id}`"
               >
-                <v-img :src="x.image" height="200px"
+                <v-img :src="`https://ipfs.io/ipfs/${x.image}`" height="200px"
                   ><v-fade-transition>
                     <v-overlay
                       v-if="hover"
@@ -29,7 +29,13 @@
                       <v-btn fab x-small outlined color="white" class="ma-3"
                         ><v-icon> mdi-heart-outline </v-icon></v-btn
                       >
-                      <v-btn small outlined rounded color="white" class="ma-3"
+                      <v-btn
+                        small
+                        outlined
+                        rounded
+                        color="white"
+                        class="ma-3"
+                        @click.prevent="downloadFile(x.files[0].cid)"
                         >Download <v-icon right> mdi-arrow-down </v-icon></v-btn
                       >
                     </v-overlay>
@@ -52,13 +58,13 @@
                           class="ml-2"
                         ></v-avatar>
                         <div class="text-small ml-2">
-                          {{ x.author.firstName + " " + x.author.lastName }}
+                          {{ x.user.firstName + " " + x.user.lastName }}
                         </div>
                       </div>
                     </v-col>
                     <v-col cols="5"
                       ><div class="text-small">
-                        {{ x.date }}
+                        {{ formatDate(x.date) }}
                       </div></v-col
                     >
                   </v-row>
@@ -74,6 +80,8 @@
 
 <script>
 import { Carousel, Slide } from "vue-carousel";
+import { mapGetters } from "vuex";
+import moment from "moment";
 
 export default {
   components: {
@@ -82,82 +90,7 @@ export default {
   },
 
   data() {
-    return {
-      items: [
-        {
-          id: 1,
-          image: require("@/assets/img/placeholder.jpeg"),
-          title: "Title",
-          profit:
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-          author: {
-            firstName: "Name",
-            lastName: "Surname",
-          },
-          date: "March 29, 2021",
-        },
-        {
-          id: 2,
-          image: require("@/assets/img/placeholder.jpeg"),
-          title: "Title",
-          profit:
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-          author: {
-            firstName: "Name",
-            lastName: "Surname",
-          },
-          date: "March 29, 2021",
-        },
-        {
-          id: 3,
-          image: require("@/assets/img/placeholder.jpeg"),
-          title: "Title",
-          profit:
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-          author: {
-            firstName: "Name",
-            lastName: "Surname",
-          },
-          date: "March 29, 2021",
-        },
-        {
-          id: 4,
-          image: require("@/assets/img/placeholder.jpeg"),
-          title: "Title",
-          profit:
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-          author: {
-            firstName: "Name",
-            lastName: "Surname",
-          },
-          date: "March 29, 2021",
-        },
-        {
-          id: 5,
-          image: require("@/assets/img/placeholder.jpeg"),
-          title: "Title",
-          profit:
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-          author: {
-            firstName: "Name",
-            lastName: "Surname",
-          },
-          date: "March 29, 2021",
-        },
-        {
-          id: 6,
-          image: require("@/assets/img/placeholder.jpeg"),
-          title: "Title",
-          profit:
-            "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-          author: {
-            firstName: "Name",
-            lastName: "Surname",
-          },
-          date: "March 29, 2021",
-        },
-      ],
-    };
+    return {};
   },
 
   computed: {
@@ -179,6 +112,20 @@ export default {
 
       return 1;
     },
+    ...mapGetters(["ideas", "isLoading"]),
+  },
+
+  methods: {
+    formatDate(date) {
+      return moment(date).format("MMM DD, YYYY");
+    },
+    downloadFile(cid) {
+      window.open(`https://ipfs.io/ipfs/${cid}`);
+    },
+  },
+
+  created() {
+    this.$store.dispatch("getIdeas");
   },
 };
 </script>
