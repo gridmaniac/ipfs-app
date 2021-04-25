@@ -83,5 +83,9 @@ export default {
   data() {
     return {};
   },
+
+  created() {
+    this.$store.dispatch("getProfile");
+  },
 };
 </script>

@@ -114,6 +114,22 @@ export default {
       const { err } = data;
       if (err) throw new Error(err);
     },
+    async getIdeaInteractables(_, id) {
+      const { data } = await axios.get(`/api/ideas/${id}/interactables`);
+
+      const { err } = data;
+      if (err) throw new Error(err);
+
+      return data;
+    },
+    async followUp(_, id) {
+      const { data } = await axios.post(`/api/follow-ups`, {
+        id,
+      });
+
+      const { err } = data;
+      if (err) throw new Error(err);
+    },
   },
   mutations: {
     setUploadResult(state, result) {

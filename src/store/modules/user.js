@@ -68,14 +68,6 @@ export default {
 
       commit("setProfile", data);
     },
-    async getInvestorById({ commit }, id) {
-      const { data } = await axios.get(`/api/investors/${id}`);
-
-      const { err } = data;
-      if (err) throw new Error(err);
-
-      commit("setInvestor", data);
-    },
   },
   mutations: {
     resetState(state) {
@@ -90,9 +82,6 @@ export default {
     },
     setProfile(state, value) {
       state.profile = value;
-    },
-    setInvestor(state, value) {
-      state.investor = value;
     },
     setIsLoading(state, value) {
       state.isLoading = value;

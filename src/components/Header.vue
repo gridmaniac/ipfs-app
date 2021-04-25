@@ -56,12 +56,14 @@
             <!-- <v-btn color="primary" v-bind="attrs" v-on="on" tile elevation="0">
               Account
             </v-btn> -->
-            <v-avatar
-              v-bind="attrs"
-              v-on="on"
-              size="36"
-              color="primary"
-            ></v-avatar>
+            <v-badge overlap dot bordered color="success">
+              <v-avatar
+                v-bind="attrs"
+                v-on="on"
+                size="36"
+                color="primary"
+              ></v-avatar>
+            </v-badge>
           </template>
 
           <!-- <v-avatar class="primary" size="36"></v-avatar> -->

@@ -12,7 +12,7 @@ import Categories from "../views/Categories.vue";
 import Messages from "../views/Messages.vue";
 import Profile from "../views/Profile.vue";
 import Idea from "../views/Idea.vue";
-import Investor from "../views/Investor.vue";
+import FollowUp from "../views/FollowUp.vue";
 import goTo from "vuetify/es5/services/goto";
 
 Vue.use(VueRouter);
@@ -123,11 +123,11 @@ const routes = [
     },
   },
   {
-    path: "/investors/:id",
-    name: "Investor",
-    component: Investor,
+    path: "/follow-up/:id",
+    name: "FollowUp",
+    component: FollowUp,
     meta: {
-      title: "Investor - IPFS App",
+      title: "Follow-up - IPFS App",
       requiresAuth: true,
     },
   },

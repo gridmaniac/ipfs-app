@@ -141,7 +141,7 @@
                 v-model="images"
                 :drop="true"
                 @input-file="inputImage"
-                :size="5 * 1024"
+                accept="image/*"
               >
                 <v-icon x-large>mdi-cloud-upload</v-icon>
                 <div class="text-caption my-2">Drag to upload</div>
